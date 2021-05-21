@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var controller = require('../controllers/AttendanceController');
+var controller = require('../controllers/attendanceController');
 
 // a simple test url to check that all of our files are communicating correctly.
 router.get('/', controller.test);
