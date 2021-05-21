@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var controller = require('../controllers/PerformanceController');
+var controller = require('../controllers/performanceController');
 
 // a simple test url to check that all of our files are communicating correctly.
 router.get('/', controller.test);
