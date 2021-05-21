@@ -10,6 +10,7 @@ var app = express();
 var userApi = require('./app/mongoose/routes/user/staffRoute');
 const imageAPI = require('./app/mongoose/routes/imageRoute');
 const attendanceAPI = require('./app/mongoose/routes/attendanceRoute');
+const performanceAPI = require('./app/mongoose/routes/performanceRoute');
 
 // Body Parser
 app.use(bodyParser.json());
@@ -77,6 +78,8 @@ app.use('/api/user', userApi);
 app.use('/api/image', imageAPI);
 
 app.use('/api/attendance', attendanceAPI);
+
+app.use('/api/performance', performanceAPI);
 
 // Testing Msg on Browser
 app.get('/api/', (req, res) => {

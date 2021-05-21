@@ -1,5 +1,6 @@
 var Attendance = require('../models/Attendance');
-
+var Performance = require('../models/Performance');
+var _ = require('lodash');
 //Simple version, without validation or sanitation
 exports.test = function (req, res) {
   res.send('this site is valid');
@@ -7,18 +8,18 @@ exports.test = function (req, res) {
 };
 
 exports.createNewAttendance = async function (req, res) {
-  var Attendance = new Attendance({
+  var jsonFormat = new Attendance({
     id: req.body.id,
     name: req.body.name,
-    aveWeight: req.body.aveWeight,
-    price: req.body.price,
-    shortcode: req.body.shortcode,
-    lastEdit: req.body.lastEdit,
-    editBy: req.body.editBy,
+    date: req.body.date,
+    action: req.body.action,
+    timestamp: req.body.timestamp,
+    emotion: req.body.emotion,
+    proba: req.body.proba,
   });
 
   try {
-    const data = await Attendance.save(Attendance);
+    const data = await jsonFormat.save(jsonFormat);
     res.send(data);
     // console.log("Attendance were created successfully!");
   } catch (err) {
@@ -90,5 +91,57 @@ exports.deleteOneById = async (req, res) => {
     res.status(500).send({
       message: 'Could not delete Attendance with id=' + id,
     });
+  }
+};
+
+exports.getAttendanceWithPerformance = async (req, res) => {
+  const date = req.query.date;
+  const name = req.query.name;
+  var condition = {};
+
+  const s = date;
+  const regex = new RegExp(s, 'i'); // i for case insensitive
+  if (date != null && date != '') {
+    condition['date'] = {
+      $regex: regex,
+    };
+  }
+
+  if (name != null && name != '') {
+    condition['name'] = {
+      $eq: name,
+    };
+  }
+
+  // console.log(condition);
+  try {
+    try {
+      var performanceData = await Performance.find(condition);
+    } catch (err) {
+      res.status(500).send({
+        message: err.message || 'Some error occurred while retrieving.',
+      });
+    }
+
+    condition['action'] = 'check-in';
+
+    try {
+      var attendanceData = await Attendance.find(condition);
+    } catch (err) {
+      res.status(500).send({
+        message: err.message || 'Some error occurred while retrieving.',
+      });
+    }
+
+    console.log(performanceData);
+    console.log(attendanceData);
+
+    var merge = _.map(performanceData, function (item) {
+      return _.merge(item, _.find(attendanceData, { date: item.date }));
+    });
+    // const result = _.pickBy(merge, (value, key) => key.startsWith('n'));
+    res.send(merge);
+  } catch (err) {
+    console.log(err);
   }
 };

@@ -12,12 +12,19 @@ const AttendanceSchema = new Schema({
   },
   date: {
     type: String,
+    required: true,
+  },
+  action: {
+    type: String,
+    required: true,
   },
   timestamp: {
     type: Date,
+    required: true,
   },
   proba: {
     type: Number,
+    required: true,
   },
   emotion: {
     type: String,
