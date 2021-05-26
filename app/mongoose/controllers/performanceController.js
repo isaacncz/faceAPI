@@ -1,5 +1,5 @@
 var Performance = require('../models/Performance');
-
+var moment = require('moment');
 //Simple version, without validation or sanitation
 exports.test = function (req, res) {
   res.send('this site is valid');
@@ -13,6 +13,8 @@ exports.createNewPerformance = async function (req, res) {
     metric: req.body.metric,
     output: req.body.output,
   });
+
+  jsonFormat.date = moment(jsonFormat.date, 'YYYY-MM-DD').format('DD/MM/YYYY');
 
   try {
     const data = await jsonFormat.save(jsonFormat);
